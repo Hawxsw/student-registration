@@ -11,6 +11,7 @@ app.get('/', (req, res) => {
 });
 
 app.use('/admin', adminRoutes);
+app.use('/admin', adminRoutes);
 
 
 app.listen(port, () => {

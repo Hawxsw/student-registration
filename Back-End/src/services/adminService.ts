@@ -12,3 +12,11 @@ export async function criarAdmin({ nome, username, senha }: Admin): Promise<void
         }
     })
 }
+
+export async function searchAdmin(username: string) {
+    return await prisma.admin.findUnique({
+        where: {
+            username,
+        },
+    });
+}
