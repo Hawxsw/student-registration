@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import adminRoutes from './router/adminRoutes';
+import studentRoutes from './router/studentRoutes';
 
 const app = express();
 const port = 3000;
@@ -21,11 +22,8 @@ app.use(cors({
 }));
 
 
-app.get('/', (req, res) => {
-    res.send('Hello World!');
-});
-
 app.use('/admin', adminRoutes);
+app.use('/student', studentRoutes);
 
 
 

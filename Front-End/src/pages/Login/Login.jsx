@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom'
 import { loginUser } from '../../API/apiService';
 import { FormContainer, FormGroup, Label, Input, Button, FormWrapper, RegistroLink, LinkContainer } from './LoginStyles';
 
 function Login() {
+    const navigate = useNavigate();
+
     const [credentials, setCredentials] = useState({
         username: '',
         senha: '',
@@ -21,6 +24,7 @@ function Login() {
         try {
             const data = await loginUser(credentials);
             console.log(data);
+            navigate('/dashboard')
         } catch (error) {
             console.error("Erro ao fazer login:", error.message);
         }
