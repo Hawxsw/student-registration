@@ -1,12 +1,10 @@
 import React, { useState } from 'react';
-import { FormContainer, FormGroup, Label, Input, Button, FormWrapper, Title } from './RegisterStyles'
-import { useNavigate } from 'react-router-dom';
-import { registerUser } from '../../API/apiService';
+import { FormContainer, FormGroup, Label, Input, Button, FormWrapper, Title } from './AdminStyles'
+import { registerUser } from '../../../API/apiService';
 
 
 
-function RegistroAdmin() {
-    const navigate = useNavigate();
+function RegistroAdmin({ onClose, onAdminRegistrado }) {
 
     const [form, setForm] = useState({
         nome: '',
@@ -26,10 +24,13 @@ function RegistroAdmin() {
         e.preventDefault();
         try {
             const response = await registerUser(form);
-            console.log('Resposta do Registro:', response);
-            navigate('/');
+            console.log('Registro bem-sucedido:', response);
+            if (onAdminRegistrado) {
+                onAdminRegistrado(response)
+            }
+            onClose();
         } catch (error) {
-            console.error('Erro ao registrar:', error);
+            console.error('Erro no registro:', error);
         }
     };
 
