@@ -1,13 +1,12 @@
 import { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
 import * as adminService from '../services/adminService';
-import { Admin } from '../Interfaces/Interdaces';
-import { generateToken } from '../utils/authService'
+import { generateToken } from '../utils/authService';
 
-export async function criarAdmin(req: Request, res: Response) {
+export async function createAdmin(req: Request, res: Response) {
     try {
-        const { nome, username, senha } = req.body;
-        const admin = await adminService.AdminService.criarAdmin({ nome, username, senha });
+        const { name, username, password } = req.body;
+        const admin = await adminService.AdminService.createAdmin({ name, username, password });
 
         return res.status(201).json(admin);
     } catch (error) {
@@ -18,14 +17,14 @@ export async function criarAdmin(req: Request, res: Response) {
 
 export async function loginAdmin(req: Request, res: Response) {
     try {
-        const { username, senha } = req.body;
+        const { username, password } = req.body;
         const admin = await adminService.AdminService.searchAdmin(username);
         if (!admin) {
             return res.status(404).json({ mensagem: "Usuário não encontrado" });
         }
 
-        const senhaValida = await bcrypt.compare(senha, admin.senhaHash);
-        if (!senhaValida) {
+        const isValidPassword = await bcrypt.compare(password, admin.passwordHash);
+        if (!isValidPassword) {
             return res.status(401).json({ mensagem: "Senha inválida" });
         }
 
@@ -38,14 +37,13 @@ export async function loginAdmin(req: Request, res: Response) {
     }
 }
 
-export async function listarAdminsController(req: Request, res: Response) {
+export async function listAdminsController(req: Request, res: Response) {
     try {
-        const pagina = parseInt(req.query.pagina as string) || 1;
-        const limite = parseInt(req.query.limite as string) || 10;
-        // Ajuste necessário: Converter filtro de string para objeto, se necessário.
-        const filtro = req.query.filtro || {};
+        const page = parseInt(req.query.page as string) || 1;
+        const limit = parseInt(req.query.limit as string) || 10;
+        const filter = req.query.filter || {};
 
-        const admins = await adminService.AdminService.listarAdmins({ pagina, limite, filtro });
+        const admins = await adminService.AdminService.listAdmins({ page, limit, filter });
 
         res.json(admins);
     } catch (error) {
@@ -54,10 +52,10 @@ export async function listarAdminsController(req: Request, res: Response) {
     }
 }
 
-export async function deletarAdminController(req: Request, res: Response) {
+export async function deleteAdminController(req: Request, res: Response) {
     try {
         const { id } = req.params;
-        await adminService.AdminService.deletarAdmin(id);
+        await adminService.AdminService.deleteAdmin(id);
         return res.status(200).json({ mensagem: "Administrador deletado com sucesso." });
     } catch (error) {
         console.error(error);
@@ -65,12 +63,12 @@ export async function deletarAdminController(req: Request, res: Response) {
     }
 }
 
-export async function atualizarAdminController(req: Request, res: Response) {
+export async function updateAdminController(req: Request, res: Response) {
     try {
         const { id } = req.params;
-        const dadosAtualizados = req.body;
-        const adminAtualizado = await adminService.AdminService.atualizarAdmin(id, dadosAtualizados);
-        return res.status(200).json(adminAtualizado);
+        const updatedData = req.body;
+        const updatedAdmin = await adminService.AdminService.updateAdmin(id, updatedData);
+        return res.status(200).json(updatedAdmin);
     } catch (error) {
         console.error(error);
         return res.status(500).json({ mensagem: "Erro ao atualizar administrador" });

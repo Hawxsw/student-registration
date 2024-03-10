@@ -35,6 +35,37 @@ export const registerUser = async (userData) => {
     }
 };
 
+export const registerAdmin = async (userData) => {
+    try {
+        const response = await fetch(`${BASE_URL}/admin/register`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(userData),
+        });
+
+        if (!response.ok) {
+            throw new Error('Falha no registro com status ' + response.status);
+        }
+
+        const text = await response.text();
+        try {
+            const data = JSON.parse(text);
+            return data;
+        } catch (err) {
+            if (text) {
+                throw new Error('A resposta não é um JSON válido: ' + text);
+            } else {
+                return 'Registro bem-sucedido, mas sem dados retornados';
+            }
+        }
+    } catch (error) {
+        console.error("Erro no registro:", error.message);
+        throw error;
+    }
+};
+
 export const listarAdmins = async (pagina = 1, limite = 10) => {
     try {
         const response = await fetch(`${BASE_URL}/admin/admins`, {

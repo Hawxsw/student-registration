@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { FormContainer, FormGroup, Label, Input, Button, FormWrapper, Title } from './AdminStyles'
-import { registerUser } from '../../../API/apiService';
+import { registerAdmin } from '../../../API/apiService';
 
 
 
@@ -23,7 +23,7 @@ function RegistroAdmin({ onClose, onAdminRegistrado }) {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await registerUser(form);
+            const response = await registerAdmin(form);
             console.log('Registro bem-sucedido:', response);
             if (onAdminRegistrado) {
                 onAdminRegistrado(response)

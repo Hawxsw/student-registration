@@ -2,14 +2,17 @@ import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 
 interface CustomRequest extends Request {
-    usuarioId?: string;
-    nomeUsuario?: string;
-    emailUsuario?: string;
+    user?: {
+        usuarioId?: string;
+        username?: string;
+        emailUser?: string;
+        role?: string;
+    };
 }
 
-const secretKey = 'suaChaveSecreta';
+const secretKey = 'yourSecretKey';
 
-export function verificarToken(req: CustomRequest, res: Response, next: NextFunction) {
+export function checkToken(req: CustomRequest, res: Response, next: NextFunction) {
     const token = req.headers['authorization']?.split(" ")[1];
 
     if (!token) {
@@ -24,13 +27,16 @@ export function verificarToken(req: CustomRequest, res: Response, next: NextFunc
         const decodedToken = decoded as any;
 
         if (decodedToken) {
-            if (decodedToken.role && decodedToken.role !== "admin") {
+            if (decodedToken.role !== "admin") {
                 return res.status(403).send({ erro: 'Acesso negado. Permissão insuficiente.' });
             }
 
-            req.usuarioId = decodedToken.id;
-            req.nomeUsuario = decodedToken.nome;
-            req.emailUsuario = decodedToken.email;
+            req.user = {
+                usuarioId: decodedToken.id,
+                username: decodedToken.nome,
+                emailUser: decodedToken.email,
+                role: decodedToken.role
+            };
 
             next();
         } else {

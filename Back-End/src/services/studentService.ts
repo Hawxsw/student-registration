@@ -3,15 +3,15 @@ import { Student } from '../Interfaces/Interdaces'
 const prisma = new PrismaClient();
 
 export const StudentService = {
-    async createStudent({ nome, sobrenome, dataNascimento, cpfOuRg, email, sobre }: Student) {
+    async createStudent({ name, lastName, birthDate, cpfOrRg, email, about }: Student) {
         return prisma.student.create({
             data: {
-                nome,
-                sobrenome,
-                dataNascimento: new Date(dataNascimento),
-                cpfOuRg,
+                name,
+                lastName,
+                birthDate: new Date(birthDate),
+                cpfOrRg,
                 email,
-                sobre,
+                about,
             },
         });
     },

@@ -1,14 +1,14 @@
 export interface Admin {
-    nome: string;
+    name: string;
     username: string;
-    senha: string;
+    password: string;
 }
 
 export interface Student {
-    nome: string;
-    sobrenome: string;
-    dataNascimento: Date | string;
-    cpfOuRg: string;
+    name: string;
+    lastName: string;
+    birthDate: Date | string;
+    cpfOrRg: string;
     email: string;
-    sobre?: string;
+    about?: string;
 }

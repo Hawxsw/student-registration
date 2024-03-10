@@ -3,17 +3,17 @@ import { prisma } from '../prisma/prismaClient';
 import { Admin } from '../Interfaces/Interdaces';
 
 interface AdminUpdateData extends Partial<Admin> {
-    senhaHash?: string;
+    passwordHash?: string;
 }
 
 export const AdminService = {
-    async criarAdmin({ nome, username, senha }: Admin) {
-        const senhaHash = await bcrypt.hash(senha, 10);
+    async createAdmin({ name, username, password }: Admin) {
+        const passwordHash = await bcrypt.hash(password, 10);
         return prisma.admin.create({
             data: {
-                nome,
+                name,
                 username,
-                senhaHash,
+                passwordHash,
             },
         });
     },
@@ -26,16 +26,16 @@ export const AdminService = {
         });
     },
 
-    async listarAdmins({ pagina = 1, limite = 10, filtro = {} }) {
-        const skip = (pagina - 1) * limite;
+    async listAdmins({ page = 1, limit = 10, filter = {} }) {
+        const skip = (page - 1) * limit;
         return prisma.admin.findMany({
-            where: filtro,
+            where: filter,
             skip,
-            take: limite,
+            take: limit,
         });
     },
 
-    async deletarAdmin(id: string) {
+    async deleteAdmin(id: string) {
         return prisma.admin.delete({
             where: {
                 id: Number(id),
@@ -43,18 +43,18 @@ export const AdminService = {
         });
     },
 
-    async atualizarAdmin(id: string, dadosAtualizados: AdminUpdateData) {
-        const { senha, ...restoDosDados } = dadosAtualizados;
-        let dadosParaAtualizar = restoDosDados;
+    async updateAdmin(id: string, updatedData: AdminUpdateData) {
+        const { password, ...restOfData } = updatedData;
+        let dataToUpdate = restOfData;
 
-        if (senha) {
-            const senhaHash = await bcrypt.hash(senha, 10);
-            dadosParaAtualizar = { ...dadosParaAtualizar, senhaHash };
+        if (password) {
+            const passwordHash = await bcrypt.hash(password, 10);
+            dataToUpdate = { ...dataToUpdate, passwordHash };
         }
 
         return prisma.admin.update({
             where: { id: Number(id) },
-            data: dadosParaAtualizar,
+            data: dataToUpdate,
         });
     },
 };
