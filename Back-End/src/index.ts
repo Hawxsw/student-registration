@@ -1,13 +1,22 @@
 import express from 'express';
+import bodyParser from 'body-parser';
+import adminRoutes from './routes/adminRoutes';
+import studentRoutes from './routes/studentRoutes';
+import authRoutes from './routes/authRoutes';
+import fileUpload from 'express-fileupload';
+import dotenv from 'dotenv';
 import cors from 'cors';
-import adminRoutes from './router/adminRoutes';
-import studentRoutes from './router/studentRoutes';
+
+
+dotenv.config();
 
 const app = express();
-const port = 3000;
+
+const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json());
+app.use(bodyParser.json());
 app.use(cors({
     origin: (origin, callback) => {
         const allowedOrigins = ['http://localhost:5173', 'http://localhost:3000'];
@@ -21,13 +30,16 @@ app.use(cors({
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
 }));
 
+app.use(fileUpload({
+    createParentPath: true,
+    debug: true
+}));
 
+// Rotas
 app.use('/admin', adminRoutes);
-app.use('/student', studentRoutes);
+app.use('/students', studentRoutes);
+app.use('/auth', authRoutes);
 
-
-
-
-app.listen(port, () => {
-    console.log(`Aplicação rodando em http://localhost:${port}`);
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
 });
